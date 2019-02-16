@@ -32,11 +32,13 @@ with open('results/grammar.txt', 'w') as f:
 decoder = Viterbi(None, None, frame_sampling = 30) # (None, None): transcript-grammar and length-model are set for each training sequence separately, see trainer.train(...)
 trainer = Trainer(decoder, dataset.input_dimension, dataset.n_classes, buffer_size = len(dataset), buffered_frame_ratio = 25)
 learning_rate = 0.01
+window = 20
+step = 5
 
 # train for 100000 iterations
 for i in range(100000):
     sequence, transcript = dataset.get()
-    loss1, loss2 = trainer.train(sequence, transcript, batch_size = 512, learning_rate = learning_rate)
+    loss1, loss2 = trainer.train(sequence, transcript, batch_size=512, learning_rate=learning_rate, window=window, step=step)
     # print some progress information
     if (i+1) % 100 == 0:
         print('Iteration %d, loss1: %f, loss2: %f, loss: %f' % (i+1, loss1, loss2, loss1 - loss2))
