@@ -122,8 +122,6 @@ class Forwarder(object):
     def _forward(self, data_wrapper, batch_size = 512):
         dataloader = torch.utils.data.DataLoader(data_wrapper, batch_size = batch_size, shuffle = False)
         # output probability container
-        # log_probs = np.zeros( (len(data_wrapper), self.n_classes), dtype=np.float32 )
-        # log_probs = torch.zeros((len(data_wrapper), self.n_classes)).cuda()
         log_probs_list = []
 #         offset = 0
         # forward all frames
@@ -182,7 +180,7 @@ class Trainer(Forwarder):
         self.prior = np.array( [ self.prior[i] if self.prior[i] > 0 else 1.0 / self.n_classes for i in range(self.n_classes) ] )
 
 
-    def train(self, sequence, transcript, batch_size = 512, learning_rate = 0.1):
+    def train(self, sequence, transcript, batch_size = 512, learning_rate = 0.1, window = 20, step = 5):
         #print('--------------------new video-----------------')
         data_wrapper = DataWrapper(sequence, window_size = 21)
         # forwarding and Viterbi decoding
@@ -196,20 +194,15 @@ class Trainer(Forwarder):
         score, labels, segments = self.decoder.decode(log_probs)
 
         video_length = log_probs_origin.shape[0]
-        window = 10
-        step = 5
         optimizer = optim.SGD(self.net.parameters(), lr = learning_rate / 512)
         optimizer.zero_grad()
         penalty = -log_probs_origin
         loss1 = self.decoder.forward_score(penalty, segments, transcript, window, step)
         loss2 = self.decoder.incremental_forward_score(penalty, segments, transcript, window, step)
-#         print('penalty', torch.sum(torch.exp(-penalty), dim=1))
         loss = loss1 - loss2
-#         print('loss', loss.item())
         loss.backward()
         optimizer.step()
 
-#         sequence_loss = loss.item()
         # add sequence to buffer
         self.buffer.add_sequence(sequence, transcript, labels)
         # update prior and mean length
