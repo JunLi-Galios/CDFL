@@ -9,4 +9,7 @@ This paper is about weakly supervised action segmentation by labeling video fram
 Python3.x with the libraries numpy and pytorch (version 0.4.1)
 
 ## Train
-Run `python3 train.py`
+Run `python train.py`
+
+## Inference
+Run `python inference.py`
