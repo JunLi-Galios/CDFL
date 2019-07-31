@@ -15,4 +15,4 @@ Run `python train.py`
 Run `python inference.py`
 
 ## Reference
-https://github.com/alexanderrichard/NeuralNetwork-Viterbi.git
+https://github.com/alexanderrichard/NeuralNetwork-Viterbi
