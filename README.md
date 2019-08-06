@@ -1,4 +1,4 @@
-# Weakly Supervised Energy-based Learning for Action Segmentation
+# Weakly Supervised Energy-Based Learning for Action Segmentation
 
 Pytorch implementation for our ICCV 2019 Oral Paper "Weakly Supervised Energy-based Learning for Action Segmentation".
 
