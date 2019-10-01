@@ -32,7 +32,7 @@ with open('results/grammar.txt', 'w') as f:
 decoder = Viterbi(None, None, frame_sampling = 30) # (None, None): transcript-grammar and length-model are set for each training sequence separately, see trainer.train(...)
 trainer = Trainer(decoder, dataset.input_dimension, dataset.n_classes, buffer_size = len(dataset), buffered_frame_ratio = 25)
 learning_rate = 0.01
-window = 20
+window = 10
 step = 5
 
 # train for 100000 iterations
