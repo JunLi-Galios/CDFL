@@ -48,6 +48,6 @@ for i in range(100000):
         length_file = 'results/lengths.iter-' + str(i+1) + '.txt'
         prior_file = 'results/prior.iter-' + str(i+1) + '.txt'
         trainer.save_model(network_file, length_file, prior_file)
-    # adjust learning rate after 2500 iterations
+    # adjust learning rate after 80000 iterations
     if (i+1) == 80000:
         learning_rate = learning_rate * 0.1
