@@ -32,7 +32,7 @@ def recog_file(filename, ground_truth_path):
 ### --ground_truth_dir: the directory where the framelevel ground truth can be found
 parser = argparse.ArgumentParser()
 parser.add_argument('--recog_dir', default='results')
-parser.add_argument('--ground_truth_dir', default='/scratch/liju2/nn_viterbi/data/groundTruth')
+parser.add_argument('--ground_truth_dir', default='data/groundTruth')
 args = parser.parse_args()
 
 filelist = glob.glob(args.recog_dir + '/P*')
