@@ -68,7 +68,7 @@ with open('data/mapping.txt', 'r') as f:
 ### read test data #############################################################
 with open('data/split1.test', 'r') as f:
     video_list = f.read().split('\n')[0:-1]
-dataset = Dataset('/scratch/liju2/nn_viterbi/data', video_list, label2index, shuffle = False)
+dataset = Dataset('data', video_list, label2index, shuffle = False)
 
 # load prior, length model, grammar, and network
 load_iteration = 100000
