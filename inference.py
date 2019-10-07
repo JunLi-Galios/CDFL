@@ -59,14 +59,14 @@ def stn_decode(queue, log_probs, decoder, index2label, window, step):
 ### read label2index mapping and index2label mapping ###########################
 label2index = dict()
 index2label = dict()
-with open('/scratch/liju2/nn_viterbi/data/mapping.txt', 'r') as f:
+with open('data/mapping.txt', 'r') as f:
     content = f.read().split('\n')[0:-1]
     for line in content:
         label2index[line.split()[1]] = int(line.split()[0])
         index2label[int(line.split()[0])] = line.split()[1]
 
 ### read test data #############################################################
-with open('/scratch/liju2/nn_viterbi/data/split1.test', 'r') as f:
+with open('data/split1.test', 'r') as f:
     video_list = f.read().split('\n')[0:-1]
 dataset = Dataset('/scratch/liju2/nn_viterbi/data', video_list, label2index, shuffle = False)
 
