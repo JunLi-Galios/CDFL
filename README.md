@@ -14,5 +14,15 @@ Run `python train.py`
 ## Inference
 Run `python inference.py`
 
+## Citation
+If you use our code or find our approach are useful, you are welcome to cite our paper:
+    @InProceedings{Li_2019_ICCV,
+    author = {Li, Jun and Lei, Peng and Todorovic, Sinisa},
+    title = {Weakly Supervised Energy-Based Learning for Action Segmentation},
+    booktitle = {The IEEE International Conference on Computer Vision (ICCV)},
+    month = {October},
+    year = {2019}
+    }
+
 ## Reference
 https://github.com/alexanderrichard/NeuralNetwork-Viterbi
