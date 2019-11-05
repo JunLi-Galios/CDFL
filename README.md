@@ -15,7 +15,7 @@ Run `python train.py`
 Run `python inference.py`
 
 ## Citation
-If you use our code or find our approach are useful, you are welcome to cite our paper:
+If you use our code or find our approach is useful, you are welcome to cite our paper:
 
     @InProceedings{Li_2019_ICCV,
     author = {Li, Jun and Lei, Peng and Todorovic, Sinisa},
