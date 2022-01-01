@@ -177,8 +177,8 @@ class Forwarder(object):
         self.n_classes = n_classes
         hidden_size = 64
 #         self.net = Net(input_dimension, hidden_size, n_classes)
-        self.net = MultiStageModel(num_blocks, num_layers, num_f_maps, input_dimension, n_classes)
-        self.net.cuda()
+        self.model = MultiStageModel(num_blocks, num_layers, num_f_maps, input_dimension, n_classes)
+        self.model.cuda()
 
     def _forward(self, data_wrapper, batch_size = 512):
         dataloader = torch.utils.data.DataLoader(data_wrapper, batch_size = batch_size, shuffle = False)
@@ -189,7 +189,7 @@ class Forwarder(object):
         for data in dataloader:
             input, _ = data
             input = input.cuda()
-            output = self.net(input)[0,:,:]
+            output = self.model(input)[0,:,:]
 #             print('output', output.size())
             log_probs_list.append(output)
 #             offset += output.shape[1]
@@ -199,7 +199,7 @@ class Forwarder(object):
     def forward(self, sequence, batch_size = 512):
 #         data_wrapper = DataWrapper(sequence, window_size = 21)
         print('MS-TCN sequence', sequence.size())
-        out = self.net(sequence)
+        out = self.model(sequence)
         print('MS-TCN out', out.size())
         return out
 
@@ -244,11 +244,19 @@ class Trainer(Forwarder):
         self.prior = np.array( [ self.prior[i] if self.prior[i] > 0 else 1.0 / self.n_classes for i in range(self.n_classes) ] )
 
 
-    def train(self, sequence, transcript, batch_size = 512, learning_rate = 0.1, window = 20, step = 5):
+    def train(self, sequence, transcript, batch_gen, batch_size=1, learning_rate = 0.1, window = 20, step = 5):
         #print('--------------------new video-----------------')
 #         data_wrapper = DataWrapper(sequence, window_size = 21)
         # forwarding and Viterbi decoding
-        log_probs_origin = self.forward(sequence)
+        batch_input, batch_target, mask, batch_confidence = batch_gen.next_batch(batch_size)
+        print('MS-TCN batch_input', batch_input.size())
+        batch_input, batch_target, mask = batch_input.to(device), batch_target.to(device), mask.to(device)
+        middle_pred, predictions = self.model(batch_input, mask)
+        print('MS-TCN middle_pred', middle_pred.size())
+        print('MS-TCN predictions', predictions.size())
+        
+#         log_probs_origin = self.forward(sequence)
+        log_probs_origin = predictions
         log_probs = log_probs_origin.data.cpu().numpy() - np.log(self.prior)
         log_probs = log_probs - np.max(log_probs)
         # define transcript grammar and updated length model
