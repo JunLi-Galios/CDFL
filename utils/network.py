@@ -7,6 +7,7 @@ from torch.autograd import Variable
 import torch.utils.data
 import torch.nn as nn
 import torch.optim as optim
+import copy
 from .grammar import SingleTranscriptGrammar
 from .length_model import PoissonModel
 
@@ -212,7 +213,7 @@ class Forwarder(object):
 class Trainer(Forwarder):
 
     def __init__(self, decoder, num_blocks, num_layers, num_f_maps, input_dimension, n_classes, buffer_size, buffered_frame_ratio = 25):
-        super(Trainer, self).__init__(input_dimension, n_classes)
+        super(Trainer, self).__init__(num_blocks, num_layers, num_f_maps, input_dimension, n_classes)
         self.buffer = Buffer(buffer_size, n_classes)
         self.decoder = decoder
         self.buffered_frame_ratio = buffered_frame_ratio
