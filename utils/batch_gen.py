@@ -38,7 +38,7 @@ class BatchGenerator(object):
 
     def generate_confidence_mask(self):
         for vid in self.list_of_examples:
-            file_ptr = open(self.gt_path + vid, 'r')
+            file_ptr = open(self.gt_path + vid + '.txt', 'r')
             content = file_ptr.read().split('\n')[:-1]
             classes = np.zeros(len(content))
             for i in range(len(classes)):
@@ -66,7 +66,7 @@ class BatchGenerator(object):
         batch_target = []
         batch_confidence = []
         for vid in batch:
-            features = np.load(self.features_path + vid.split('.')[0] + '.npy')
+            features = np.load(self.features_path + vid + '.npy')
             batch_input.append(features[:, ::self.sample_rate])
             batch_target.append(self.gt[vid])
             batch_confidence.append(self.confidence_mask[vid])
