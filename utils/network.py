@@ -173,10 +173,11 @@ class Net(nn.Module):
 
 class Forwarder(object):
 
-    def __init__(self, input_dimension, n_classes):
+    def __init__(self, num_blocks, num_layers, num_f_maps, input_dimension, n_classes):
         self.n_classes = n_classes
         hidden_size = 64
-        self.net = Net(input_dimension, hidden_size, n_classes)
+#         self.net = Net(input_dimension, hidden_size, n_classes)
+        self.net = MultiStageModel(num_blocks, num_layers, num_f_maps, input_dimension, n_classes)
         self.net.cuda()
 
     def _forward(self, data_wrapper, batch_size = 512):
@@ -196,8 +197,11 @@ class Forwarder(object):
         return log_probs
 
     def forward(self, sequence, batch_size = 512):
-        data_wrapper = DataWrapper(sequence, window_size = 21)
-        return self._forward(data_wrapper)
+#         data_wrapper = DataWrapper(sequence, window_size = 21)
+        print('MS-TCN sequence', sequence.size())
+        out = self.net(sequence)
+        print('MS-TCN out', out.size())
+        return out
 
     def load_model(self, model_file):
         self.net.cpu()
@@ -207,7 +211,7 @@ class Forwarder(object):
 
 class Trainer(Forwarder):
 
-    def __init__(self, decoder, input_dimension, n_classes, buffer_size, buffered_frame_ratio = 25):
+    def __init__(self, decoder, num_blocks, num_layers, num_f_maps, input_dimension, n_classes, buffer_size, buffered_frame_ratio = 25):
         super(Trainer, self).__init__(input_dimension, n_classes)
         self.buffer = Buffer(buffer_size, n_classes)
         self.decoder = decoder
@@ -242,9 +246,9 @@ class Trainer(Forwarder):
 
     def train(self, sequence, transcript, batch_size = 512, learning_rate = 0.1, window = 20, step = 5):
         #print('--------------------new video-----------------')
-        data_wrapper = DataWrapper(sequence, window_size = 21)
+#         data_wrapper = DataWrapper(sequence, window_size = 21)
         # forwarding and Viterbi decoding
-        log_probs_origin = self._forward(data_wrapper)
+        log_probs_origin = self.forward(sequence)
         log_probs = log_probs_origin.data.cpu().numpy() - np.log(self.prior)
         log_probs = log_probs - np.max(log_probs)
         # define transcript grammar and updated length model
@@ -277,4 +281,5 @@ class Trainer(Forwarder):
         self.net.cuda()
         np.savetxt(length_file, self.mean_lengths)
         np.savetxt(prior_file, self.prior)
+        
 
