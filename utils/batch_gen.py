@@ -44,10 +44,10 @@ class BatchGenerator(object):
             for i in range(len(classes)):
                 classes[i] = self.actions_dict[content[i]]
             classes = classes[::self.sample_rate]
-            self.gt[vid] = classes
+            self.gt[vid + '.txt'] = classes
             num_frames = classes.shape[0]
 
-            random_idx = self.random_index[vid]
+            random_idx = self.random_index[vid + '.txt']
 
             # Generate mask for confidence loss. There are two masks for both side of timestamps
             left_mask = np.zeros([self.num_classes, num_frames - 1])
@@ -56,7 +56,7 @@ class BatchGenerator(object):
                 left_mask[int(classes[random_idx[j]]), random_idx[j]:random_idx[j + 1]] = 1
                 right_mask[int(classes[random_idx[j + 1]]), random_idx[j]:random_idx[j + 1]] = 1
 
-            self.confidence_mask[vid] = np.array([left_mask, right_mask])
+            self.confidence_mask[vid + '.txt'] = np.array([left_mask, right_mask])
 
     def next_batch(self, batch_size):
         batch = self.list_of_examples[self.index:self.index + batch_size]
@@ -68,8 +68,8 @@ class BatchGenerator(object):
         for vid in batch:
             features = np.load(self.features_path + vid + '.npy')
             batch_input.append(features[:, ::self.sample_rate])
-            batch_target.append(self.gt[vid])
-            batch_confidence.append(self.confidence_mask[vid])
+            batch_target.append(self.gt[vid + '.txt'])
+            batch_confidence.append(self.confidence_mask[vid + '.txt'])
 
         length_of_sequences = list(map(len, batch_target))
         batch_input_tensor = torch.zeros(len(batch_input), np.shape(batch_input[0])[0], max(length_of_sequences), dtype=torch.float)
@@ -87,8 +87,8 @@ class BatchGenerator(object):
         batch = self.list_of_examples[self.index - batch_size:self.index]
         boundary_target_tensor = torch.ones(len(batch), max_frames, dtype=torch.long) * (-100)
         for b, vid in enumerate(batch):
-            single_frame = self.random_index[vid]
-            gt = self.gt[vid]
+            single_frame = self.random_index[vid + '.txt']
+            gt = self.gt[vid + '.txt']
             frame_idx_tensor = torch.from_numpy(np.array(single_frame))
             gt_tensor = torch.from_numpy(gt.astype(int))
             boundary_target_tensor[b, frame_idx_tensor] = gt_tensor[frame_idx_tensor]
