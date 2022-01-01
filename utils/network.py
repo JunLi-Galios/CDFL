@@ -7,6 +7,7 @@ from torch.autograd import Variable
 import torch.utils.data
 import torch.nn as nn
 import torch.optim as optim
+import torch.nn.functional as F
 import copy
 from .grammar import SingleTranscriptGrammar
 from .length_model import PoissonModel
