@@ -50,7 +50,7 @@ batch_gen.read_data(vid_list_file)
 # train for 100000 iterations
 for i in range(100000):
     sequence, transcript = dataset.get()
-    loss1, loss2 = trainer.train(sequence, transcript, batch_gen, learning_rate=learning_rate, window=window, step=step)
+    loss1, loss2 = trainer.train(sequence, transcript, batch_gen, batch_size=1, learning_rate=learning_rate, window=window, step=step)
     # print some progress information
     if (i+1) % 100 == 0:
         print('Iteration %d, loss1: %f, loss2: %f, loss: %f' % (i+1, loss1, loss2, loss1 - loss2))
