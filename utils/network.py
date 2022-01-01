@@ -251,7 +251,7 @@ class Trainer(Forwarder):
         # forwarding and Viterbi decoding
         batch_input, batch_target, mask, batch_confidence = batch_gen.next_batch(batch_size)
         print('MS-TCN batch_input', batch_input.size())
-        batch_input, batch_target, mask = batch_input.to(device), batch_target.to(device), mask.to(device)
+        batch_input, batch_target, mask = batch_input.cuda(), batch_target.cuda(), mask.cuda()
         middle_pred, predictions = self.model(batch_input, mask)
         print('MS-TCN middle_pred', middle_pred.size())
         print('MS-TCN predictions', predictions.size())
