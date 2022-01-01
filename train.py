@@ -4,6 +4,7 @@ import numpy as np
 from utils.dataset import Dataset
 from utils.network import Trainer, Forwarder
 from utils.viterbi import Viterbi
+from utils.batch_gen import BatchGenerator
 import os
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
