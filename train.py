@@ -18,6 +18,7 @@ with open('data/mapping.txt', 'r') as f:
         index2label[int(line.split()[0])] = line.split()[1]
 
 ### read training data #########################################################
+vid_list_file = 'data/split1.train'
 with open('data/split1.train', 'r') as f:
     video_list = f.read().split('\n')[0:-1]
 dataset = Dataset('data', video_list, label2index, shuffle = True)
@@ -39,6 +40,12 @@ trainer = Trainer(decoder, num_stages, num_layers, num_f_maps, dataset.input_dim
 learning_rate = 0.01
 window = 10
 step = 5
+
+gt_path = "data/groundTruth/"
+features_path = "data/features/"
+
+batch_gen = BatchGenerator(dataset.n_classes, label2index, gt_path, features_path, sample_rate=1)
+batch_gen.read_data(vid_list_file)
 
 # train for 100000 iterations
 for i in range(100000):
