@@ -29,8 +29,12 @@ with open('results/grammar.txt', 'w') as f:
     f.write('\n'.join(paths) + '\n')
 
 ### actual nn-viterbi training #################################################
+num_stages = 4
+num_layers = 10
+num_f_maps = 64
+
 decoder = Viterbi(None, None, frame_sampling = 30) # (None, None): transcript-grammar and length-model are set for each training sequence separately, see trainer.train(...)
-trainer = Trainer(decoder, dataset.input_dimension, dataset.n_classes, buffer_size = len(dataset), buffered_frame_ratio = 25)
+trainer = Trainer(decoder, num_stages, num_layers, num_f_maps, dataset.input_dimension, dataset.n_classes, buffer_size = len(dataset), buffered_frame_ratio = 25)
 learning_rate = 0.01
 window = 10
 step = 5
